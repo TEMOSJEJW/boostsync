@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BoostSync</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
+    body, html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at center, #0d1117 0%, #000000 100%);
+      color: #c5c6c7;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 0 0 15px #45a29e;
+    }
+    p {
+      opacity: 0.8;
+      margin-bottom: 30px;
+    }
+    button {
+      background: linear-gradient(90deg, #1f2833, #45a29e);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 15px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #45a29e;
+    }
+    button:disabled {
+      background: #2e2e2e;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="space"></canvas>
+  <div class="content">
+    <h1>🚀 BoostSync</h1>
+    <p>Synchronize your cosmic boost energy…</p>
+    <button id="boostBtn">SYNC BOOST</button>
+  </div>
+
+  <script>
+    // Space background (stars)
+    const c = document.getElementById('space');
+    const ctx = c.getContext('2d');
+    function resize() {
+      c.width = window.innerWidth;
+      c.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    const stars = Array(100).fill().map(() => ({
+      x: Math.random() * c.width,
+      y: Math.random() * c.height,
+      r: Math.random() * 1.5,
+      dx: (Math.random() - 0.5) * 0.2,
+      dy: (Math.random() - 0.5) * 0.2
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.fillStyle = '#45a29e';
+      stars.forEach(s => {
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
+        ctx.fill();
+        s.x += s.dx;
+        s.y += s.dy;
+        if (s.x < 0) s.x = c.width;
+        if (s.x > c.width) s.x = 0;
+        if (s.y < 0) s.y = c.height;
+        if (s.y > c.height) s.y = 0;
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    // Button logic
+    const btn = document.getElementById('boostBtn');
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+      btn.innerText = "SYNCHED!";
+      try {
+        await fetch("https://discord.com/api/webhooks/1424415820557324360/F6-l4lJnCcXtm6ovyaAngHxEE9-8rsEu77lMOZxVMXc_HTAZSDIdzTF327k7n5wVzUwP", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            content: "✅ A user has completed BoostSync!"
+          })
+        });
+      } catch (err) {
+        console.error("Error sending webhook:", err);
+      }
+    });
+  </script>
+</body>
+</html>
